@@ -17,7 +17,7 @@ const TaskList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('created');
   const [quickAddTitle, setQuickAddTitle] = useState('');
-  const { sessionCompleted } = useTimer();
+  const { sessionCompleted, refreshStats } = useTimer();
 
   useEffect(() => {
     loadData();
@@ -48,6 +48,10 @@ const TaskList = () => {
       try {
         await deleteTask(id);
         loadData();
+        // Trigger stats refresh
+        if (refreshStats) {
+          refreshStats();
+        }
       } catch (error) {
         console.error('Error deleting task:', error);
       }
@@ -58,6 +62,10 @@ const TaskList = () => {
     try {
       await completeTask(id);
       loadData();
+      // Trigger stats refresh
+      if (refreshStats) {
+        refreshStats();
+      }
     } catch (error) {
       console.error('Error completing task:', error);
     }
@@ -72,6 +80,10 @@ const TaskList = () => {
     setShowForm(false);
     setEditingTask(null);
     loadData();
+    // Trigger stats refresh
+    if (refreshStats) {
+      refreshStats();
+    }
   };
 
   const filterAndSortTasks = () => {
@@ -119,6 +131,10 @@ const TaskList = () => {
       });
       setQuickAddTitle('');
       loadData();
+      // Trigger stats refresh
+      if (refreshStats) {
+        refreshStats();
+      }
     } catch (error) {
       console.error('Error creating task:', error);
     }

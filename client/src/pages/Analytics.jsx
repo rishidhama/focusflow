@@ -18,6 +18,7 @@ import {
   getProductivityTrends,
   getTaskCompletion,
 } from '../services/analytics';
+import { useTimer } from '../context/TimerContext';
 import { format, subDays } from 'date-fns';
 import './Analytics.css';
 
@@ -40,10 +41,11 @@ const Analytics = () => {
   const [taskStats, setTaskStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState(30);
+  const { sessionCompleted } = useTimer();
 
   useEffect(() => {
     loadAnalytics();
-  }, [dateRange]);
+  }, [dateRange, sessionCompleted]);
 
   const loadAnalytics = async () => {
     try {

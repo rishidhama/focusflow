@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getTasks } from '../../services/tasks';
 import { getSessionStats } from '../../services/sessions';
+import { useTimer } from '../../context/TimerContext';
 import { format } from 'date-fns';
 import './StatsOverview.css';
 
@@ -13,10 +14,11 @@ const StatsOverview = () => {
     weekMinutes: 0,
   });
   const [loading, setLoading] = useState(true);
+  const { sessionCompleted } = useTimer();
 
   useEffect(() => {
     loadStats();
-  }, []);
+  }, [sessionCompleted]);
 
   const loadStats = async () => {
     try {

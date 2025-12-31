@@ -221,6 +221,10 @@ export const TimerProvider = ({ children }) => {
     }
   };
 
+  const refreshStats = () => {
+    setSessionCompleted(prev => prev + 1);
+  };
+
   const value = {
     timeLeft,
     isRunning,
@@ -238,6 +242,7 @@ export const TimerProvider = ({ children }) => {
     skipTimer,
     setTimerType,
     updateSettings,
+    refreshStats,
   };
 
   return <TimerContext.Provider value={value}>{children}</TimerContext.Provider>;
