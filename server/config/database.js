@@ -16,8 +16,19 @@ const connectDB = async () => {
     return;
   }
 
+  // Validate MongoDB URI format
+  const uri = process.env.MONGODB_URI.trim();
+  if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
+    console.error('Invalid MONGODB_URI format. Must start with mongodb:// or mongodb+srv://');
+    console.error('Current value:', uri.substring(0, 20) + '...');
+    console.log('Falling back to in-memory mock database');
+    process.env.USE_MOCK_DB = 'true';
+    return;
+  }
+
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    const uri = process.env.MONGODB_URI.trim();
+    const conn = await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 10000,

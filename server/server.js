@@ -40,6 +40,24 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Health check - MUST be before routes for Railway health checks
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'FocusFlow API is running' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'FocusFlow API is running' });
+});
+
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'FocusFlow API is running',
+    version: '1.0.0'
+  });
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tasks', require('./routes/tasks'));
@@ -48,27 +66,30 @@ app.use('/api/sessions', require('./routes/sessions'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/sync', require('./routes/sync'));
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'FocusFlow API is running',
-    version: '1.0.0'
-  });
-});
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'FocusFlow API is running' });
-});
-
 // Error handler
 app.use(errorHandler);
 
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err);
+  // Don't exit, let the server continue running
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  // Don't exit, let the server continue running
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// Handle server errors
+server.on('error', (err) => {
+  console.error('Server error:', err);
 });
 
