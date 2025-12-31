@@ -41,21 +41,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health check - MUST be before routes for Railway health checks
+// Simple, fast response for Railway health checks (no DB dependency)
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'FocusFlow API is running' });
+  res.status(200).set('Content-Type', 'text/plain').send('OK');
 });
 
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'FocusFlow API is running' });
-});
-
-// Root route
+// Also respond to root for Railway
 app.get('/', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
     message: 'FocusFlow API is running',
     version: '1.0.0'
   });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'FocusFlow API is running' });
 });
 
 // Routes
@@ -83,10 +84,22 @@ process.on('uncaughtException', (err) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
+
+// Log port info for debugging
+console.log('PORT from environment:', process.env.PORT);
+console.log('Using PORT:', PORT);
+
+// Make sure we're listening on all interfaces for Railway
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✓ Server running on port ${PORT}`);
+  console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✓ Health check: http://0.0.0.0:${PORT}/health`);
+  console.log(`✓ Server is ready to accept connections`);
 });
+
+// Ensure server doesn't crash on errors
+server.keepAliveTimeout = 65000;
+server.headersTimeout = 66000;
 
 // Handle server errors
 server.on('error', (err) => {
