@@ -40,10 +40,23 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
 // Health check - MUST be before routes for Railway health checks
 // Simple, fast response for Railway health checks (no DB dependency)
 app.get('/health', (req, res) => {
+  console.log('Health check requested');
   res.status(200).set('Content-Type', 'text/plain').send('OK');
+});
+
+// Also handle HEAD requests for health checks
+app.head('/health', (req, res) => {
+  console.log('Health check HEAD requested');
+  res.status(200).end();
 });
 
 // Also respond to root for Railway
@@ -59,13 +72,48 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'FocusFlow API is running' });
 });
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/tasks', require('./routes/tasks'));
-app.use('/api/subjects', require('./routes/subjects'));
-app.use('/api/sessions', require('./routes/sessions'));
-app.use('/api/analytics', require('./routes/analytics'));
-app.use('/api/sync', require('./routes/sync'));
+// Routes - wrap in try-catch to prevent crashes
+try {
+  app.use('/api/auth', require('./routes/auth'));
+  console.log('✓ Auth routes loaded');
+} catch (error) {
+  console.error('Error loading auth routes:', error);
+}
+
+try {
+  app.use('/api/tasks', require('./routes/tasks'));
+  console.log('✓ Task routes loaded');
+} catch (error) {
+  console.error('Error loading task routes:', error);
+}
+
+try {
+  app.use('/api/subjects', require('./routes/subjects'));
+  console.log('✓ Subject routes loaded');
+} catch (error) {
+  console.error('Error loading subject routes:', error);
+}
+
+try {
+  app.use('/api/sessions', require('./routes/sessions'));
+  console.log('✓ Session routes loaded');
+} catch (error) {
+  console.error('Error loading session routes:', error);
+}
+
+try {
+  app.use('/api/analytics', require('./routes/analytics'));
+  console.log('✓ Analytics routes loaded');
+} catch (error) {
+  console.error('Error loading analytics routes:', error);
+}
+
+try {
+  app.use('/api/sync', require('./routes/sync'));
+  console.log('✓ Sync routes loaded');
+} catch (error) {
+  console.error('Error loading sync routes:', error);
+}
 
 // Error handler
 app.use(errorHandler);
