@@ -7,6 +7,15 @@ const errorHandler = require('./middleware/errorHandler');
 // Load environment variables
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0 && process.env.NODE_ENV === 'production') {
+  console.error('Missing required environment variables:', missingVars.join(', '));
+  console.error('Please set these in your Railway/Vercel environment variables');
+}
+
 // Connect to database
 connectDB();
 
