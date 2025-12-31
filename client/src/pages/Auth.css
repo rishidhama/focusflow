@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 80px);
-  padding: 2rem;
+  padding: 1.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
@@ -29,25 +29,24 @@
 
 .auth-card {
   background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
-  border-radius: 1.5rem;
-  padding: 3rem;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 420px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   z-index: 1;
-  animation: fadeIn 0.6s ease-out;
 }
 
 .auth-card h1 {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   color: var(--gray-800);
   text-align: center;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -55,11 +54,11 @@
 }
 
 .error-message {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+  background: rgba(239, 68, 68, 0.1);
   color: var(--danger);
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
   font-size: 0.875rem;
   font-weight: 500;
   border: 1px solid rgba(239, 68, 68, 0.2);

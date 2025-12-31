@@ -63,9 +63,7 @@ const StatsOverview = () => {
   return (
     <div className="stats-overview">
       <div className="stat-card">
-        <div className="stat-icon" style={{ background: 'rgba(59, 130, 246, 0.1)' }}>
-          Tasks
-        </div>
+        <div className="stat-icon" style={{ background: 'rgba(59, 130, 246, 0.1)' }}></div>
         <div className="stat-content">
           <div className="stat-value">{stats.totalTasks}</div>
           <div className="stat-label">Total Tasks</div>
@@ -73,9 +71,7 @@ const StatsOverview = () => {
       </div>
 
       <div className="stat-card">
-        <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
-          Done
-        </div>
+        <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.1)' }}></div>
         <div className="stat-content">
           <div className="stat-value">{stats.completedTasks}</div>
           <div className="stat-label">Completed</div>
@@ -83,9 +79,7 @@ const StatsOverview = () => {
       </div>
 
       <div className="stat-card">
-        <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.1)' }}>
-          Time
-        </div>
+        <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.1)' }}></div>
         <div className="stat-content">
           <div className="stat-value">{Math.round(stats.todayMinutes / 60 * 10) / 10}h</div>
           <div className="stat-label">Today's Focus</div>
@@ -93,9 +87,7 @@ const StatsOverview = () => {
       </div>
 
       <div className="stat-card">
-        <div className="stat-icon" style={{ background: 'rgba(139, 92, 246, 0.1)' }}>
-          Rate
-        </div>
+        <div className="stat-icon" style={{ background: 'rgba(139, 92, 246, 0.1)' }}></div>
         <div className="stat-content">
           <div className="stat-value">{completionRate}%</div>
           <div className="stat-label">Completion Rate</div>

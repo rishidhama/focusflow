@@ -1,12 +1,12 @@
 .task-card {
   background: white;
-  border-radius: 1rem;
-  padding: 1.75rem;
-  box-shadow: var(--shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--gray-100);
   position: relative;
   overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
 .task-card::before {
@@ -14,21 +14,18 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
+  width: 3px;
   height: 100%;
   background: var(--gray-200);
-  transition: width 0.3s;
 }
 
 .task-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   border-color: var(--gray-200);
 }
 
 .task-card:hover::before {
-  width: 4px;
-  background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+  background: var(--primary);
 }
 
 .task-card.completed {
@@ -44,8 +41,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.25rem;
-  gap: 1rem;
+  margin-bottom: 0.75rem;
+  gap: 0.75rem;
 }
 
 .task-title-section {
@@ -54,11 +51,10 @@
 
 .task-title {
   color: var(--gray-800);
-  margin-bottom: 0.75rem;
-  font-size: 1.125rem;
-  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.4;
-  letter-spacing: -0.01em;
 }
 
 .task-subject {
@@ -81,19 +77,19 @@
 
 .task-description {
   color: var(--gray-600);
-  margin-bottom: 1.25rem;
-  line-height: 1.6;
-  font-size: 0.9375rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  font-size: 0.875rem;
 }
 
 .task-meta {
   display: flex;
-  gap: 1.25rem;
-  font-size: 0.8125rem;
+  gap: 0.75rem;
+  font-size: 0.75rem;
   color: var(--gray-500);
   flex-wrap: wrap;
   align-items: center;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--gray-100);
 }
 
