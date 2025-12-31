@@ -7,11 +7,14 @@ const errorHandler = require('./middleware/errorHandler');
 // Load environment variables
 dotenv.config();
 
-// Connect to database
-connectDB();
-
 // Initialize Express app
 const app = express();
+
+// Connect to database (non-blocking)
+connectDB().catch((error) => {
+  console.error('Database connection failed:', error);
+  // Server will continue to run even if DB connection fails
+});
 
 // CORS - MUST be first middleware, before anything else
 app.use((req, res, next) => {
@@ -44,6 +47,15 @@ app.use('/api/subjects', require('./routes/subjects'));
 app.use('/api/sessions', require('./routes/sessions'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/sync', require('./routes/sync'));
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'FocusFlow API is running',
+    version: '1.0.0'
+  });
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -9,11 +9,18 @@ const connectDB = async () => {
     return;
   }
 
+  if (!process.env.MONGODB_URI) {
+    console.error('MONGODB_URI is not set in environment variables');
+    console.log('Falling back to in-memory mock database');
+    process.env.USE_MOCK_DB = 'true';
+    return;
+  }
+
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
