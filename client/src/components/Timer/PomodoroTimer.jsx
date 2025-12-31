@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTimer } from '../../context/TimerContext';
+import { getTasks } from '../../services/tasks';
 import './PomodoroTimer.css';
 
 const PomodoroTimer = () => {
@@ -19,12 +20,44 @@ const PomodoroTimer = () => {
     setTimerType,
   } = useTimer();
 
+  const [tasks, setTasks] = useState([]);
+  const [showTaskSelector, setShowTaskSelector] = useState(false);
+  const [loadingTasks, setLoadingTasks] = useState(false);
+
   useEffect(() => {
     // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
   }, []);
+
+  const loadTasks = async () => {
+    try {
+      setLoadingTasks(true);
+      const tasksData = await getTasks({ status: 'pending' });
+      const inProgressTasks = await getTasks({ status: 'in-progress' });
+      const allTasks = [...tasksData, ...inProgressTasks];
+      setTasks(allTasks);
+    } catch (error) {
+      console.error('Error loading tasks:', error);
+    } finally {
+      setLoadingTasks(false);
+    }
+  };
+
+  const handleSelectTask = (task) => {
+    startTimer(task, task.subjectId);
+    setShowTaskSelector(false);
+  };
+
+  const handleStartWithTask = () => {
+    if (!currentTask) {
+      setShowTaskSelector(true);
+      loadTasks();
+    } else {
+      startTimer();
+    }
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -60,18 +93,46 @@ const PomodoroTimer = () => {
         <div className="timer-header">
           <h2>{getSessionLabel()}</h2>
           {currentTask ? (
-            <p className="timer-task">
-              {currentTask.title}
-              {currentSubject && (
-                <span className="timer-subject" style={{ color: currentSubject.color }}>
-                  {' '}• {currentSubject.name}
-                </span>
+            <div className="timer-task-selected">
+              <p className="timer-task">
+                {currentTask.title}
+                {currentSubject && (
+                  <span className="timer-subject" style={{ color: currentSubject.color }}>
+                    {' '}• {currentSubject.name}
+                  </span>
+                )}
+              </p>
+              {!isRunning && (
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => {
+                    setShowTaskSelector(true);
+                    loadTasks();
+                  }}
+                  style={{ marginTop: '0.5rem' }}
+                >
+                  Change Task
+                </button>
               )}
-            </p>
+            </div>
           ) : (
-            <p className="timer-task" style={{ color: '#9ca3af', fontStyle: 'italic' }}>
-              No task selected - pomodoros won't be tracked
-            </p>
+            <div className="timer-task-selector">
+              <p className="timer-task" style={{ color: '#9ca3af', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                No task selected - pomodoros won't be tracked
+              </p>
+              {!isRunning && (
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => {
+                    setShowTaskSelector(true);
+                    loadTasks();
+                  }}
+                  style={{ marginTop: '0.5rem' }}
+                >
+                  Select Task
+                </button>
+              )}
+            </div>
           )}
         </div>
 
@@ -106,7 +167,7 @@ const PomodoroTimer = () => {
 
         <div className="timer-controls">
           {!isRunning ? (
-            <button className="btn btn-primary btn-large" onClick={startTimer}>
+            <button className="btn btn-primary btn-large" onClick={handleStartWithTask}>
               Start
             </button>
           ) : isPaused ? (
@@ -154,6 +215,53 @@ const PomodoroTimer = () => {
           </button>
         </div>
       </div>
+
+      {showTaskSelector && (
+        <div className="task-selector-overlay" onClick={() => setShowTaskSelector(false)}>
+          <div className="task-selector-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="task-selector-header">
+              <h3>Select a Task</h3>
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => setShowTaskSelector(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="task-selector-list">
+              {loadingTasks ? (
+                <div className="spinner"></div>
+              ) : tasks.length === 0 ? (
+                <p className="no-tasks-message">No pending or in-progress tasks found</p>
+              ) : (
+                tasks.map((task) => (
+                  <div
+                    key={task._id}
+                    className="task-selector-item"
+                    onClick={() => handleSelectTask(task)}
+                  >
+                    <div className="task-selector-item-content">
+                      <h4>{task.title}</h4>
+                      {task.subjectId && (
+                        <span
+                          className="task-selector-subject"
+                          style={{ backgroundColor: task.subjectId.color || '#3b82f6' }}
+                        >
+                          {task.subjectId.name}
+                        </span>
+                      )}
+                      <span className="task-selector-priority">{task.priority} priority</span>
+                    </div>
+                    <div className="task-selector-pomodoros">
+                      {task.completedPomodoros || 0} / {task.estimatedPomodoros || 1}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

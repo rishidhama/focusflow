@@ -1,7 +1,14 @@
 .analytics-container {
-  padding: 2rem;
+  flex: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.analytics-content {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
 .analytics-header {
@@ -9,61 +16,101 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  color: white;
 }
 
 .analytics-header h1 {
-  color: #1f2937;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
 }
 
 .date-range-select {
-  padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.75rem;
   font-size: 1rem;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   cursor: pointer;
+  font-weight: 500;
+  color: #1f2937;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.date-range-select:hover {
+  background: white;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .stat-card {
   background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  padding: 1.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .stat-card h3 {
   color: #6b7280;
   font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .stat-value {
   color: #1f2937;
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 2rem;
 }
 
 .chart-card {
   background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chart-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .chart-card.full-width {
@@ -73,22 +120,78 @@
 .chart-card h2 {
   color: #1f2937;
   margin-bottom: 1.5rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.75rem;
+}
+
+.chart-card > div {
+  min-height: 300px;
+  position: relative;
 }
 
 .no-data {
   text-align: center;
   color: #6b7280;
-  padding: 2rem;
+  padding: 4rem 2rem;
+  font-size: 1.125rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  border: 2px dashed #e5e7eb;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 968px) {
+  .analytics-content {
+    padding: 1.5rem;
+  }
+
+  .analytics-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .analytics-header h1 {
+    font-size: 2rem;
+  }
+
+  .date-range-select {
+    width: 100%;
+  }
+
   .charts-grid {
     grid-template-columns: 1fr;
   }
   
   .chart-card.full-width {
     grid-column: 1;
+  }
+
+  .stats-cards {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-content {
+    padding: 1rem;
+  }
+
+  .analytics-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .chart-card {
+    padding: 1.5rem;
+  }
+
+  .chart-card h2 {
+    font-size: 1.25rem;
   }
 }
 

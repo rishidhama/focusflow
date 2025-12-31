@@ -69,13 +69,106 @@ const Analytics = () => {
     }
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          padding: 15,
+          font: {
+            size: 13,
+            weight: '500',
+          },
+          usePointStyle: true,
+        },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        padding: 12,
+        titleFont: {
+          size: 14,
+          weight: '600',
+        },
+        bodyFont: {
+          size: 13,
+        },
+        cornerRadius: 8,
+        displayColors: true,
+      },
+    },
+  };
+
+  const pieOptions = {
+    ...chartOptions,
+    plugins: {
+      ...chartOptions.plugins,
+      legend: {
+        ...chartOptions.plugins.legend,
+        position: 'bottom',
+      },
+    },
+  };
+
+  const lineOptions = {
+    ...chartOptions,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value) {
+            return value + 'h';
+          },
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+  };
+
+  const barOptions = {
+    ...chartOptions,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value) {
+            return value + 'h';
+          },
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+  };
+
+  const defaultColors = [
+    '#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe',
+    '#43e97b', '#fa709a', '#fee140', '#30cfd0', '#a8edea'
+  ];
+
   const subjectChartData = {
     labels: timeBySubject.map((s) => s.subjectName || 'Uncategorized'),
     datasets: [
       {
         label: 'Time (hours)',
-        data: timeBySubject.map((s) => (s.totalMinutes / 60).toFixed(2)),
-        backgroundColor: timeBySubject.map((s) => s.color || '#3b82f6'),
+        data: timeBySubject.map((s) => parseFloat((s.totalMinutes / 60).toFixed(2))),
+        backgroundColor: timeBySubject.map((s, i) => s.color || defaultColors[i % defaultColors.length]),
+        borderWidth: 2,
+        borderColor: '#fff',
       },
     ],
   };
@@ -85,8 +178,12 @@ const Analytics = () => {
     datasets: [
       {
         label: 'Focus Time (hours)',
-        data: timeByDate.map((d) => (d.totalMinutes / 60).toFixed(2)),
-        backgroundColor: '#3b82f6',
+        data: timeByDate.map((d) => parseFloat((d.totalMinutes / 60).toFixed(2))),
+        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+        borderColor: '#667eea',
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
       },
     ],
   };
@@ -96,10 +193,17 @@ const Analytics = () => {
     datasets: [
       {
         label: 'Daily Focus Time (hours)',
-        data: productivityTrends.map((t) => (t.totalMinutes / 60).toFixed(2)),
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        data: productivityTrends.map((t) => parseFloat((t.totalMinutes / 60).toFixed(2))),
+        borderColor: '#667eea',
+        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+        borderWidth: 3,
+        fill: true,
         tension: 0.4,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: '#667eea',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
       },
     ],
   };
@@ -114,66 +218,68 @@ const Analytics = () => {
 
   return (
     <div className="analytics-container">
-      <div className="analytics-header">
-        <h1>Analytics</h1>
-        <select
-          className="date-range-select"
-          value={dateRange}
-          onChange={(e) => setDateRange(parseInt(e.target.value))}
-        >
-          <option value={7}>Last 7 days</option>
-          <option value={30}>Last 30 days</option>
-          <option value={90}>Last 90 days</option>
-        </select>
-      </div>
-
-      {taskStats && (
-        <div className="stats-cards">
-          <div className="stat-card">
-            <h3>Total Tasks</h3>
-            <p className="stat-value">{taskStats.total}</p>
-          </div>
-          <div className="stat-card">
-            <h3>Completed</h3>
-            <p className="stat-value">{taskStats.completed}</p>
-          </div>
-          <div className="stat-card">
-            <h3>Completion Rate</h3>
-            <p className="stat-value">{taskStats.completionRate}%</p>
-          </div>
-          <div className="stat-card">
-            <h3>In Progress</h3>
-            <p className="stat-value">{taskStats.inProgress}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="charts-grid">
-        <div className="chart-card">
-          <h2>Time by Subject</h2>
-          {timeBySubject.length > 0 ? (
-            <Pie data={subjectChartData} />
-          ) : (
-            <p className="no-data">No data available</p>
-          )}
+      <div className="analytics-content">
+        <div className="analytics-header">
+          <h1>Analytics Dashboard</h1>
+          <select
+            className="date-range-select"
+            value={dateRange}
+            onChange={(e) => setDateRange(parseInt(e.target.value))}
+          >
+            <option value={7}>Last 7 days</option>
+            <option value={30}>Last 30 days</option>
+            <option value={90}>Last 90 days</option>
+          </select>
         </div>
 
-        <div className="chart-card">
-          <h2>Time by Date</h2>
-          {timeByDate.length > 0 ? (
-            <Bar data={dateChartData} />
-          ) : (
-            <p className="no-data">No data available</p>
-          )}
-        </div>
+        {taskStats && (
+          <div className="stats-cards">
+            <div className="stat-card">
+              <h3>Total Tasks</h3>
+              <p className="stat-value">{taskStats.total}</p>
+            </div>
+            <div className="stat-card">
+              <h3>Completed</h3>
+              <p className="stat-value">{taskStats.completed}</p>
+            </div>
+            <div className="stat-card">
+              <h3>Completion Rate</h3>
+              <p className="stat-value">{taskStats.completionRate}%</p>
+            </div>
+            <div className="stat-card">
+              <h3>In Progress</h3>
+              <p className="stat-value">{taskStats.inProgress}</p>
+            </div>
+          </div>
+        )}
 
-        <div className="chart-card full-width">
-          <h2>Productivity Trends</h2>
-          {productivityTrends.length > 0 ? (
-            <Line data={trendsChartData} />
-          ) : (
-            <p className="no-data">No data available</p>
-          )}
+        <div className="charts-grid">
+          <div className="chart-card">
+            <h2>Time by Subject</h2>
+            {timeBySubject.length > 0 ? (
+              <Pie data={subjectChartData} options={pieOptions} />
+            ) : (
+              <p className="no-data">No data available</p>
+            )}
+          </div>
+
+          <div className="chart-card">
+            <h2>Time by Date</h2>
+            {timeByDate.length > 0 ? (
+              <Bar data={dateChartData} options={barOptions} />
+            ) : (
+              <p className="no-data">No data available</p>
+            )}
+          </div>
+
+          <div className="chart-card full-width">
+            <h2>Productivity Trends</h2>
+            {productivityTrends.length > 0 ? (
+              <Line data={trendsChartData} options={lineOptions} />
+            ) : (
+              <p className="no-data">No data available</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
