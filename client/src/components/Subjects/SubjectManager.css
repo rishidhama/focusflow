@@ -1,97 +1,191 @@
 .subject-manager {
   background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: var(--shadow);
   margin-bottom: 2rem;
+  border: 1px solid var(--gray-100);
+  transition: all 0.3s;
+}
+
+.subject-manager:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .subject-manager-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--gray-200);
 }
 
 .subject-manager-header h3 {
-  color: #1f2937;
+  color: var(--gray-800);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .subject-form-card {
-  background: #f9fafb;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  border-radius: 0.75rem;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(99, 102, 241, 0.1);
 }
 
 .color-picker {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
+  flex-wrap: wrap;
 }
 
 .color-input {
-  width: 60px;
-  height: 40px;
-  border: 2px solid #d1d5db;
-  border-radius: 0.5rem;
+  width: 64px;
+  height: 48px;
+  border: 3px solid var(--gray-200);
+  border-radius: 0.75rem;
   cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.color-input:hover {
+  border-color: var(--primary);
+  transform: scale(1.05);
+  box-shadow: var(--shadow);
 }
 
 .preset-colors {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .color-preset {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #d1d5db;
-  border-radius: 0.5rem;
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--gray-200);
+  border-radius: 0.75rem;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 }
 
 .color-preset:hover {
-  transform: scale(1.1);
+  transform: scale(1.15) translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
 }
 
 .subjects-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .subject-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 0.5rem;
+  padding: 1.25rem;
+  background: var(--gray-50);
+  border-radius: 0.75rem;
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s;
+}
+
+.subject-item:hover {
+  background: white;
+  box-shadow: var(--shadow);
+  transform: translateX(4px);
 }
 
 .subject-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .subject-color {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.5rem;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .subject-name {
-  font-weight: 500;
-  color: #1f2937;
+  font-weight: 600;
+  color: var(--gray-800);
+  font-size: 0.9375rem;
 }
 
 .subject-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.625rem;
+}
+
+@media (max-width: 640px) {
+  .subject-manager {
+    padding: 1.5rem;
+  }
+
+  .subject-manager-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .subject-manager-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .subject-form-card {
+    padding: 1.25rem;
+  }
+
+  .color-picker {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .preset-colors {
+    width: 100%;
+  }
+
+  .subject-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .subject-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .subject-actions .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .subject-manager {
+    padding: 1rem;
+  }
+
+  .subject-actions {
+    flex-direction: column;
+  }
+
+  .subject-actions .btn {
+    width: 100%;
+  }
 }
 
