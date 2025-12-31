@@ -13,12 +13,13 @@ connectDB();
 // Initialize Express app
 const app = express();
 
-// Middleware
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:3000',
+// Middleware - CORS configuration
+app.use(cors({
+  origin: true, // Allow all origins in production
   credentials: true,
-};
-app.use(cors(corsOptions));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
