@@ -13,29 +13,27 @@ connectDB();
 // Initialize Express app
 const app = express();
 
-// Middleware - CORS configuration (must be before routes)
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://focusflow-rishidhama.vercel.app',
-  process.env.FRONTEND_URL,
-  process.env.CLIENT_URL,
-].filter(Boolean);
+// CORS - MUST be first middleware, before anything else
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  res.header('Access-Control-Allow-Origin', origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
-// CORS middleware - allow all origins for now
+// Also use cors middleware as backup
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin
-    if (!origin) return callback(null, true);
-    // Allow all origins
-    callback(null, true);
-  },
+  origin: true,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
