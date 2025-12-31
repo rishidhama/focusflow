@@ -10,6 +10,7 @@ const TaskForm = ({ task, subjects, onClose }) => {
     status: 'pending',
     estimatedPomodoros: 1,
     subjectId: '',
+    dueDate: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,6 +24,7 @@ const TaskForm = ({ task, subjects, onClose }) => {
         status: task.status || 'pending',
         estimatedPomodoros: task.estimatedPomodoros || 1,
         subjectId: task.subjectId?._id || task.subjectId || '',
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
       });
     }
   }, [task]);
@@ -42,6 +44,7 @@ const TaskForm = ({ task, subjects, onClose }) => {
         ...formData,
         subjectId: formData.subjectId || null,
         estimatedPomodoros: parseInt(formData.estimatedPomodoros),
+        dueDate: formData.dueDate || null,
       };
 
       if (task) {
@@ -126,16 +129,29 @@ const TaskForm = ({ task, subjects, onClose }) => {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Estimated Pomodoros</label>
-            <input
-              type="number"
-              name="estimatedPomodoros"
-              className="form-input"
-              min="1"
-              value={formData.estimatedPomodoros}
-              onChange={handleChange}
-            />
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Estimated Pomodoros</label>
+              <input
+                type="number"
+                name="estimatedPomodoros"
+                className="form-input"
+                min="1"
+                value={formData.estimatedPomodoros}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Due Date</label>
+              <input
+                type="date"
+                name="dueDate"
+                className="form-input"
+                value={formData.dueDate}
+                onChange={handleChange}
+              />
+            </div>
           </div>
 
           <div className="form-actions">

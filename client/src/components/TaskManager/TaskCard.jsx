@@ -1,7 +1,16 @@
 import React from 'react';
+import { format, isPast, isToday, isTomorrow, differenceInDays } from 'date-fns';
+import { useTimer } from '../../context/TimerContext';
 import './TaskCard.css';
 
 const TaskCard = ({ task, onDelete, onComplete, onEdit }) => {
+  const { startTimer, isRunning, currentTask } = useTimer();
+  
+  const handleStartTimer = () => {
+    if (!isRunning) {
+      startTimer(task, task.subjectId);
+    }
+  };
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'high':
@@ -28,6 +37,28 @@ const TaskCard = ({ task, onDelete, onComplete, onEdit }) => {
     }
   };
 
+  const getDueDateInfo = () => {
+    if (!task.dueDate) return null;
+    
+    const dueDate = new Date(task.dueDate);
+    if (isPast(dueDate) && !isToday(dueDate)) {
+      return { text: `Overdue: ${format(dueDate, 'MMM dd')}`, urgent: true };
+    }
+    if (isToday(dueDate)) {
+      return { text: 'Due today', urgent: true };
+    }
+    if (isTomorrow(dueDate)) {
+      return { text: 'Due tomorrow', urgent: false };
+    }
+    const daysUntil = differenceInDays(dueDate, new Date());
+    if (daysUntil <= 7) {
+      return { text: `Due in ${daysUntil} days`, urgent: false };
+    }
+    return { text: `Due ${format(dueDate, 'MMM dd')}`, urgent: false };
+  };
+
+  const dueDateInfo = getDueDateInfo();
+
   return (
     <div className={`task-card ${task.status === 'completed' ? 'completed' : ''}`}>
       <div className="task-card-header">
@@ -43,6 +74,15 @@ const TaskCard = ({ task, onDelete, onComplete, onEdit }) => {
           )}
         </div>
         <div className="task-actions">
+          {task.status !== 'completed' && !isRunning && (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={handleStartTimer}
+              title="Start timer for this task"
+            >
+              Start Timer
+            </button>
+          )}
           {task.status !== 'completed' && (
             <button
               className="btn btn-success btn-sm"
@@ -80,6 +120,17 @@ const TaskCard = ({ task, onDelete, onComplete, onEdit }) => {
         >
           {task.status}
         </span>
+        {dueDateInfo && (
+          <span
+            className="task-due-date"
+            style={{
+              color: dueDateInfo.urgent ? '#ef4444' : '#6b7280',
+              fontWeight: dueDateInfo.urgent ? 600 : 400,
+            }}
+          >
+            {dueDateInfo.text}
+          </span>
+        )}
         <span className="task-pomodoros">
           {task.completedPomodoros || 0} / {task.estimatedPomodoros || 1} pomodoros
         </span>

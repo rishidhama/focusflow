@@ -1,21 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { getTasks, deleteTask, completeTask } from '../../services/tasks';
+import { getTasks, deleteTask, completeTask, createTask } from '../../services/tasks';
 import { getSubjects } from '../../services/subjects';
+import { useTimer } from '../../context/TimerContext';
 import TaskCard from './TaskCard';
 import TaskForm from './TaskForm';
 import './TaskList.css';
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('created');
+  const [quickAddTitle, setQuickAddTitle] = useState('');
+  const { sessionCompleted } = useTimer();
 
   useEffect(() => {
     loadData();
-  }, [filter]);
+  }, [filter, sessionCompleted]);
+
+  useEffect(() => {
+    filterAndSortTasks();
+  }, [tasks, searchQuery, sortBy]);
 
   const loadData = async () => {
     try {
@@ -64,6 +74,56 @@ const TaskList = () => {
     loadData();
   };
 
+  const filterAndSortTasks = () => {
+    let filtered = [...tasks];
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (task) =>
+          task.title.toLowerCase().includes(query) ||
+          task.description?.toLowerCase().includes(query)
+      );
+    }
+
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'dueDate':
+          if (!a.dueDate && !b.dueDate) return 0;
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(a.dueDate) - new Date(b.dueDate);
+        case 'priority':
+          const priorityOrder = { high: 3, medium: 2, low: 1 };
+          return priorityOrder[b.priority] - priorityOrder[a.priority];
+        case 'status':
+          return a.status.localeCompare(b.status);
+        case 'created':
+        default:
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+
+    setFilteredTasks(filtered);
+  };
+
+  const handleQuickAdd = async (e) => {
+    e.preventDefault();
+    if (!quickAddTitle.trim()) return;
+
+    try {
+      await createTask({
+        title: quickAddTitle,
+        priority: 'medium',
+        status: 'pending',
+      });
+      setQuickAddTitle('');
+      loadData();
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
+  };
+
   if (loading) {
     return <div className="spinner"></div>;
   }
@@ -77,32 +137,71 @@ const TaskList = () => {
         </button>
       </div>
 
-      <div className="task-filters">
-        <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </button>
-        <button
-          className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
-          onClick={() => setFilter('pending')}
-        >
-          Pending
-        </button>
-        <button
-          className={`filter-btn ${filter === 'in-progress' ? 'active' : ''}`}
-          onClick={() => setFilter('in-progress')}
-        >
-          In Progress
-        </button>
-        <button
-          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
-          onClick={() => setFilter('completed')}
-        >
-          Completed
-        </button>
+      <div className="task-controls">
+        <div className="task-search">
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+        </div>
+
+        <div className="task-filters">
+          <button
+            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All
+          </button>
+          <button
+            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+            onClick={() => setFilter('pending')}
+          >
+            Pending
+          </button>
+          <button
+            className={`filter-btn ${filter === 'in-progress' ? 'active' : ''}`}
+            onClick={() => setFilter('in-progress')}
+          >
+            In Progress
+          </button>
+          <button
+            className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+            onClick={() => setFilter('completed')}
+          >
+            Completed
+          </button>
+        </div>
+
+        <div className="task-sort">
+          <label>Sort by:</label>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="sort-select"
+          >
+            <option value="created">Recently Created</option>
+            <option value="dueDate">Due Date</option>
+            <option value="priority">Priority</option>
+            <option value="status">Status</option>
+          </select>
+        </div>
       </div>
+
+      <form onSubmit={handleQuickAdd} className="quick-add-form">
+        <input
+          type="text"
+          placeholder="Quick add task (press Enter)"
+          value={quickAddTitle}
+          onChange={(e) => setQuickAddTitle(e.target.value)}
+          className="quick-add-input"
+        />
+        <button type="submit" className="btn btn-primary btn-sm">
+          Add
+        </button>
+      </form>
 
       {showForm && (
         <TaskForm
@@ -113,10 +212,14 @@ const TaskList = () => {
       )}
 
       <div className="task-list">
-        {tasks.length === 0 ? (
-          <p className="empty-message">No tasks found. Create your first task!</p>
+        {filteredTasks.length === 0 ? (
+          <p className="empty-message">
+            {tasks.length === 0
+              ? 'No tasks found. Create your first task!'
+              : 'No tasks match your search criteria.'}
+          </p>
         ) : (
-          tasks.map((task) => (
+          filteredTasks.map((task) => (
             <TaskCard
               key={task._id}
               task={task}

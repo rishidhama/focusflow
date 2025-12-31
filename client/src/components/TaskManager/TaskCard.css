@@ -72,6 +72,10 @@
   text-transform: capitalize;
 }
 
+.task-due-date {
+  font-size: 0.875rem;
+}
+
 .task-pomodoros {
   color: #9ca3af;
 }

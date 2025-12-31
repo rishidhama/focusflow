@@ -10,6 +10,7 @@ const PomodoroTimer = () => {
     sessionType,
     currentTask,
     currentSubject,
+    settings,
     startTimer,
     pauseTimer,
     resumeTimer,
@@ -32,7 +33,11 @@ const PomodoroTimer = () => {
   };
 
   const progress = () => {
-    const duration = sessionType === 'focus' ? 25 * 60 : sessionType === 'long-break' ? 15 * 60 : 5 * 60;
+    const duration = sessionType === 'focus' 
+      ? settings.focusDuration * 60 
+      : sessionType === 'long-break' 
+      ? settings.longBreakDuration * 60 
+      : settings.shortBreakDuration * 60;
     return ((duration - timeLeft) / duration) * 100;
   };
 
@@ -54,7 +59,7 @@ const PomodoroTimer = () => {
       <div className="timer-card">
         <div className="timer-header">
           <h2>{getSessionLabel()}</h2>
-          {currentTask && (
+          {currentTask ? (
             <p className="timer-task">
               {currentTask.title}
               {currentSubject && (
@@ -62,6 +67,10 @@ const PomodoroTimer = () => {
                   {' '}• {currentSubject.name}
                 </span>
               )}
+            </p>
+          ) : (
+            <p className="timer-task" style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+              No task selected - pomodoros won't be tracked
             </p>
           )}
         </div>

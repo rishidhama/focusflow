@@ -26,6 +26,9 @@ const Navbar = () => {
             <Link to="/analytics" className="navbar-link">
               Analytics
             </Link>
+            <Link to="/settings" className="navbar-link">
+              Settings
+            </Link>
             <span className="navbar-user">{user?.username}</span>
             <button onClick={handleLogout} className="btn btn-secondary">
               Logout

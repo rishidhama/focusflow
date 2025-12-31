@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import { getSettings, saveSettings } from '../utils/storage';
 import { createSession } from '../services/sessions';
+import { updateTask } from '../services/tasks';
 
 const TimerContext = createContext();
 
@@ -33,6 +34,7 @@ export const TimerProvider = ({ children }) => {
   const [currentTask, setCurrentTask] = useState(null);
   const [currentSubject, setCurrentSubject] = useState(null);
   const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [sessionCompleted, setSessionCompleted] = useState(0); // Counter to trigger refreshes
 
   const intervalRef = useRef(null);
 
@@ -73,13 +75,9 @@ export const TimerProvider = ({ children }) => {
     // Save session if it was a focus session
     if (sessionType === 'focus' && sessionStartTime) {
       try {
-        const duration = sessionType === 'focus' 
-          ? settings.focusDuration 
-          : sessionType === 'long-break'
-          ? settings.longBreakDuration
-          : settings.shortBreakDuration;
+        const duration = settings.focusDuration;
         
-        await createSession({
+        const session = await createSession({
           duration,
           type: sessionType,
           completed: true,
@@ -88,6 +86,36 @@ export const TimerProvider = ({ children }) => {
           taskId: currentTask?._id || null,
           subjectId: currentSubject?._id || currentTask?.subjectId?._id || null,
         });
+
+        // Increment completed pomodoros for the task if one is associated
+        if (currentTask?._id) {
+          try {
+            const currentCompleted = currentTask.completedPomodoros || 0;
+            const newCompletedPomodoros = currentCompleted + 1;
+            
+            console.log('Updating task pomodoros:', {
+              taskId: currentTask._id,
+              current: currentCompleted,
+              new: newCompletedPomodoros
+            });
+            
+            const updatedTask = await updateTask(currentTask._id, {
+              completedPomodoros: newCompletedPomodoros,
+            });
+            
+            console.log('Task updated successfully:', updatedTask);
+            
+            // Update currentTask state to reflect the change
+            setCurrentTask({ ...currentTask, completedPomodoros: newCompletedPomodoros });
+            // Trigger refresh in components that listen to this
+            setSessionCompleted(prev => prev + 1);
+          } catch (error) {
+            console.error('Error updating task pomodoros:', error);
+            console.error('Error details:', error.response?.data || error.message);
+          }
+        } else {
+          console.log('No task associated with timer session');
+        }
       } catch (error) {
         console.error('Error saving session:', error);
       }
@@ -202,6 +230,7 @@ export const TimerProvider = ({ children }) => {
     currentTask,
     currentSubject,
     settings,
+    sessionCompleted,
     startTimer,
     pauseTimer,
     resumeTimer,
