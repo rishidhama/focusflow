@@ -10,6 +10,16 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
+// Health check - ABSOLUTE FIRST - before ANY middleware
+// Railway checks this immediately on startup
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+app.head('/health', (req, res) => {
+  res.status(200).end();
+});
+
 // Connect to database (non-blocking)
 connectDB().catch((error) => {
   console.error('Database connection failed:', error);
@@ -42,21 +52,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+  if (req.path !== '/health') {
+    console.log(`${req.method} ${req.path}`);
+  }
   next();
-});
-
-// Health check - MUST be before routes for Railway health checks
-// Simple, fast response for Railway health checks (no DB dependency)
-app.get('/health', (req, res) => {
-  console.log('Health check requested');
-  res.status(200).set('Content-Type', 'text/plain').send('OK');
-});
-
-// Also handle HEAD requests for health checks
-app.head('/health', (req, res) => {
-  console.log('Health check HEAD requested');
-  res.status(200).end();
 });
 
 // Also respond to root for Railway
