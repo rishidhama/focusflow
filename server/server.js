@@ -135,6 +135,7 @@ const PORT = process.env.PORT || 5000;
 // Log port info for debugging
 console.log('PORT from environment:', process.env.PORT);
 console.log('Using PORT:', PORT);
+console.log('All environment variables:', Object.keys(process.env).filter(k => k.includes('PORT') || k.includes('RAILWAY')));
 
 // Make sure we're listening on all interfaces for Railway
 const server = app.listen(PORT, '0.0.0.0', () => {
@@ -142,6 +143,11 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`✓ Health check: http://0.0.0.0:${PORT}/health`);
   console.log(`✓ Server is ready to accept connections`);
+  console.log(`✓ Listening on 0.0.0.0:${PORT} (all interfaces)`);
+  
+  // Test that server is actually listening
+  const address = server.address();
+  console.log(`✓ Server address:`, address);
 });
 
 // Ensure server doesn't crash on errors
