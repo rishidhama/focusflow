@@ -117,9 +117,6 @@ const PomodoroTimer = () => {
             </div>
           ) : (
             <div className="timer-task-selector">
-              <p className="timer-task" style={{ color: '#9ca3af', fontStyle: 'italic', marginBottom: '0.5rem' }}>
-                No task selected - pomodoros won't be tracked
-              </p>
               {!isRunning && (
                 <button
                   className="btn btn-primary btn-sm"
@@ -127,7 +124,6 @@ const PomodoroTimer = () => {
                     setShowTaskSelector(true);
                     loadTasks();
                   }}
-                  style={{ marginTop: '0.5rem' }}
                 >
                   Select Task
                 </button>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { createTask, updateTask } from '../../services/tasks';
 import './TaskForm.css';
 
@@ -60,7 +61,7 @@ const TaskForm = ({ task, subjects, onClose }) => {
     }
   };
 
-  return (
+  const modalContent = (
     <div className="task-form-overlay" onClick={onClose}>
       <div className="task-form-modal" onClick={(e) => e.stopPropagation()}>
         <div className="task-form-header">
@@ -166,6 +167,8 @@ const TaskForm = ({ task, subjects, onClose }) => {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default TaskForm;

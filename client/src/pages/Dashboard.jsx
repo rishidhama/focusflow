@@ -11,18 +11,14 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1>Dashboard</h1>
-          <p className="dashboard-subtitle">Welcome back! Let's stay focused today.</p>
-        </div>
+      <div className="timer-section">
+        <PomodoroTimer />
+      </div>
 
-        <StatsOverview />
+      <div className="dashboard-scrollable">
+        <div className="dashboard-container">
+          <StatsOverview />
 
-        <div className="dashboard-main">
-          <div className="timer-section">
-            <PomodoroTimer />
-          </div>
           <div className="content-section">
             <div className="content-tabs">
               <button

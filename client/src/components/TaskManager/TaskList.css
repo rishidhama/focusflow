@@ -8,14 +8,14 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--gray-100);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .task-list-header h2 {
-  color: var(--gray-800);
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  color: #ffffff;
+  font-size: 1.625rem;
+  font-weight: 800;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .task-controls {
@@ -32,19 +32,29 @@
 
 .search-input {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 2.75rem;
-  border: 2px solid var(--gray-200);
-  border-radius: 0.75rem;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 0.625rem;
   font-size: 0.9375rem;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-weight: 500;
   transition: all 0.2s;
-  background: white;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
 }
+
 
 .task-search::before {
   content: '🔍';
@@ -69,78 +79,83 @@
 }
 
 .task-sort label {
-  font-weight: 600;
-  color: var(--gray-700);
-  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .sort-select {
-  padding: 0.625rem 1rem;
-  border: 2px solid var(--gray-200);
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
   cursor: pointer;
-  background: white;
-  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  color: white;
   font-weight: 500;
 }
 
 .sort-select:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .quick-add-form {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.625rem;
   margin-bottom: 1rem;
-  padding: 0.75rem;
-  background: rgba(99, 102, 241, 0.03);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(99, 102, 241, 0.1);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border-radius: 0.625rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .quick-add-input {
   flex: 1;
-  padding: 0.875rem 1rem;
-  border: 2px solid var(--gray-200);
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 0.5rem;
   font-size: 0.9375rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
   transition: all 0.2s;
-  background: white;
+}
+
+.quick-add-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .quick-add-input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .filter-btn {
-  padding: 0.625rem 1.25rem;
-  border: 2px solid var(--gray-200);
-  background: white;
+  padding: 0.625rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 0.5rem;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.95);
   transition: all 0.2s;
-  color: var(--gray-600);
 }
 
 .filter-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  background: rgba(99, 102, 241, 0.05);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
 }
 
 .filter-btn.active {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: rgba(255, 255, 255, 0.22);
   color: white;
-  border-color: var(--primary);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .task-list {
@@ -150,11 +165,11 @@
 
 .empty-message {
   text-align: center;
-  color: var(--gray-500);
+  color: rgba(255, 255, 255, 0.7);
   padding: 2rem 1rem;
-  background: rgba(99, 102, 241, 0.02);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 0.5rem;
-  border: 1px dashed var(--gray-300);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
   font-size: 0.9375rem;
   font-weight: 500;
 }
